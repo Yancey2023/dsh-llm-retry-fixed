@@ -1,0 +1,28 @@
+{
+  "name": "dsh-llm-retry-fixed",
+  "version": "0.1.0",
+  "description": "DSH host plugin: retry LLM quota-exhaustion failures (429 insufficient_quota / code QUOTA) on a fixed schedule — immediately, 1s, 5s, 10s, 30s, 1min, 2min, 5min, 10min — before giving up. Uses the same agent/request-error recovery extension point and durable llm/retry events as the stock exponential policy.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node test/retry.test.mjs"
+  },
+  "devDependencies": {},
+  "license": "MIT"
+}

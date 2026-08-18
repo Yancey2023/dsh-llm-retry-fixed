@@ -1,0 +1,35 @@
+# dsh-llm-retry-fixed bundle patch — the `dsh.bundle.patch` layer of the npm package.
+#
+# Installing through the official plugin CLI —
+#
+#   dsh plugin --profile web add /absolute/path/to/dsh-llm-retry-fixed
+#
+# — reconciles `dsh.profile.bundles` against the installed package and, seeing
+# this declaration, appends `dsh-llm-retry-fixed` to the bundle stack. The
+# profile boot then merges THIS patch (one `insert` of the plugin row) into
+# the HOST composition.
+#
+# The row carries the fixed retry schedule: codes = QUOTA (the harness-mapped
+# 429 quota code) + insufficient_quota (the raw provider code) + RATE_LIMIT
+# (the harness code for 429s it cannot positively classify as quota — e.g.
+# DeepSeek/sensenova "rpm exhausted" / type "quota_exceeded_error", whose
+# glued wording never matches isQuotaExceededError), delaysMs = immediately,
+# 1s, 5s, 10s, 30s, 1min, 2min, 5min, 10min. Tune either value here.
+- insert:
+    - id: llm-retry-fixed
+      name: 'dsh-llm-retry-fixed'
+      config:
+        codes:
+          - QUOTA
+          - insufficient_quota
+          - RATE_LIMIT
+        delaysMs:
+          - 0
+          - 1000
+          - 5000
+          - 10000
+          - 30000
+          - 60000
+          - 120000
+          - 300000
+          - 600000
